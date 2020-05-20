@@ -69,11 +69,5 @@ for i in range(len(final_answer_column)):
 for i in range(len(final_answer_column)):
     print('№', i, '| название', final_answer_column[i].x_val, '| знаечние', final_answer_column[i].y_val, '\n')
 
-
-# печать финального ответа на изображение
-for i in final_answer_column:
-    cv2.putText(diagram_image, i.y_val, (int(i.x_coordinate + 10), int(i.y_coordinate-10)), cv2.FONT_HERSHEY_SIMPLEX, 1,
-                color_black, 2)
-
 cv2.imshow('image', diagram_image)
 cv2.waitKey(0)
