@@ -69,11 +69,12 @@ def get_horizontal_axis(edges, part=2, delta=5e-3):
 
     # min_shift - минимальное расстояние от границы картинки, при котором линия может считаться осью
     min_shift = image_height / 100
+    rho_max = 0
+    theta_max = np.pi / 2
     for [[rho, theta]] in lines:
-        if is_horizontal(theta, delta) and image_height / 2 < rho < image_height - min_shift:
-            return [[rho, theta]]
-
-    return [[edges.shape[0], np.pi / 2]]
+        if is_horizontal(theta, delta) and image_height / 2 < rho < image_height - min_shift and rho > rho_max:
+            rho_max, theta_max = rho, theta
+    return [[rho_max, theta_max]]
 
 
 def draw_lines_on_image(img, lines):

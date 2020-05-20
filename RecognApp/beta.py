@@ -26,7 +26,14 @@ color_black = (0, 0, 0)
 diagram_image = cv2.imread(sys.argv[1])
 boarder = color_recogn.recogn_column(diagram_image, 10)
 # отрисовка границ столбцов
-array_of_column = color_recogn.draw_boarder(diagram_image, boarder)
+array_of_column = []
+attempt = 0
+while not array_of_column:
+    if attempt > 10000:
+        break
+    attempt += 1
+    array_of_column = color_recogn.draw_boarder(diagram_image, boarder)
+print(attempt)
 # нахождение осей
 lines = find_axes.find_axes(sys.argv[1])
 

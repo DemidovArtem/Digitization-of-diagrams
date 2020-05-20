@@ -31,7 +31,6 @@ def setup_processor():
 
 # Recognize a file at filePath and save result to resultFilePath
 def recognize_file(file_path, result_file_path, language, output_format, region):
-    print("Uploading..")
     settings = ProcessingSettings()
     settings.Language = language
     settings.OutputFormat = output_format
@@ -43,11 +42,7 @@ def recognize_file(file_path, result_file_path, language, output_format, region)
         print("Not enough credits to process the document. Please add more pages to your application's account.")
         return
 
-    # print("Id = {}".format(task.Id))
-    # print("Status = {}".format(task.Status))
-
     # Wait for the task to be completed
-    print("Waiting..")
     # Note: it's recommended that your application waits at least 2 seconds
     # before making the first getTaskStatus request and also between such requests
     # for the same task. Making requests more often will not improve your
@@ -57,16 +52,12 @@ def recognize_file(file_path, result_file_path, language, output_format, region)
     # at https://ocrsdk.com/documentation/apireference/listFinishedTasks/).
 
     while task.is_active():
-        time.sleep(5)
-        print(".")
+        time.sleep(2)
         task = processor.get_task_status(task)
-
-    print("Status = {}".format(task.Status))
 
     if task.Status == "Completed":
         if task.DownloadUrl is not None:
             processor.download_result(task, result_file_path)
-            # print("Result was written to {}".format(result_file_path))
     else:
         print("Error processing task")
 
@@ -87,6 +78,8 @@ def parse_xml(target, array_of_column, is_under_ox=False):
                     text[index] += ' '
                 text[index] += char.text
             new_line = [True] * len(columns)
+        for i in range(len(text)):
+            text[i] = ' '.join(text[i].split())
     else:
         text = [''.join([char.text for char in line.iter('{@link}char')]) for line in root.iter('{@link}line')]
     return [line.attrib for line in root.iter('{@link}line')], \

@@ -119,7 +119,6 @@ def merge_rectangle(boarder, column, max_y):
 
 
 def recogn_column(diagram_image, num_clasters=10):
-    # cv2.imshow('diagram_image', diagram_image)
     diagram_image = cv2.cvtColor(diagram_image, cv2.COLOR_BGR2RGB)
     img = diagram_image
     img = img.reshape((img.shape[0] * img.shape[1], 3))
