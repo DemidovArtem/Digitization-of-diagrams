@@ -64,6 +64,8 @@ def rectangle_check(cluster, img):
             reference = (1, 0)
             a = reference[0] * usedEdge[0] + reference[1] * usedEdge[1]
             b = cv2.norm(reference) * cv2.norm(usedEdge)
+            if b == 0:
+                continue
             angle = 180.0 / math.pi * math.acos(a / b)
             # отбрасываем прямоугольники стоящие под кглом к осям, а так же слишком маленькие которые являются точками,
             # или же слишком большие(например сам прямоугольник картинки)

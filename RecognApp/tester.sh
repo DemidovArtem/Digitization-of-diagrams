@@ -7,6 +7,5 @@ do
   echo "_______________________________"
   echo "             " $i "             "
   echo "_______________________________"
-  python beta.py ../GenerateApp/tables_short_horiz/Data/$i/image.png
   python beta.py $1/$i/image.png
 done
