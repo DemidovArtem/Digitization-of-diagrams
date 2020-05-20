@@ -14,19 +14,19 @@ import parse_text
 
 def centroid_histogram(clt):
     numLabels = np.arange(0, len(np.unique(clt.labels_)) + 1)
-    (hist, _) = np.histogram(clt.labels_, bins = numLabels)
+    (hist, _) = np.histogram(clt.labels_, bins=numLabels)
     hist = hist.astype("float")
     hist /= hist.sum()
     return hist
 
 
 def plot_colors(hist, centroids):
-    bar = np.zeros((50, 300, 3), dtype = "uint8")
+    bar = np.zeros((50, 300, 3), dtype="uint8")
     startX = 0
     for (percent, color) in zip(hist, centroids):
         endX = startX + (percent * 300)
         cv2.rectangle(bar, (int(startX), 0), (int(endX), 50),
-            color.astype("uint8").tolist(), -1)
+                      color.astype("uint8").tolist(), -1)
         startX = endX
     return bar
 
@@ -55,22 +55,22 @@ def rectangle_check(cluster, img):
             box = cv2.boxPoints(rect)
             box = np.int0(box)
             # вычисляем площадь и угол наклона прямоугольника
-            area = int(rect[1][0]*rect[1][1])
-            edge1 = np.int0((box[1][0] - box[0][0],box[1][1] - box[0][1]))
+            area = int(rect[1][0] * rect[1][1])
+            edge1 = np.int0((box[1][0] - box[0][0], box[1][1] - box[0][1]))
             edge2 = np.int0((box[2][0] - box[1][0], box[2][1] - box[1][1]))
             usedEdge = edge1
             if cv2.norm(edge2) > cv2.norm(edge1):
                 usedEdge = edge2
             reference = (1, 0)
-            a = reference[0]*usedEdge[0] + reference[1]*usedEdge[1]
+            a = reference[0] * usedEdge[0] + reference[1] * usedEdge[1]
             b = cv2.norm(reference) * cv2.norm(usedEdge)
-            angle = 180.0/math.pi * math.acos(a / b)
+            angle = 180.0 / math.pi * math.acos(a / b)
             # отбрасываем прямоугольники стоящие под кглом к осям, а так же слишком маленькие которые являются точками,
             # или же слишком большие(например сам прямоугольник картинки)
             if 1000 < area < 100000 and (angle == 90.0 or angle == 180.0 or angle == 0.0):
                 boarder.append(box)
                 if max(box[0][1], max(box[1][1], max(box[2][1], box[3][1]))) > max_y:
-                    max_y =  max(box[0][1], max(box[1][1], max(box[2][1], box[3][1])))
+                    max_y = max(box[0][1], max(box[1][1], max(box[2][1], box[3][1])))
     boarder.remove([[]])
     return boarder, max_y
 
@@ -149,9 +149,8 @@ def draw_boarder(diagram_image, boarder):
         if i != [[]]:
             cv2.drawContours(diagram_image, [i], 0, color_red, 2)
             print(i)
-            mid = (i[0][0] + i[1][0])/2
-            column_ = column.Column(mid, min(i[0][1],  i[3][1]), '', 0)
+            mid = (i[0][0] + i[1][0]) / 2
+            column_ = column.Column(mid, min(i[0][1], i[3][1]), '', 0)
             array_of_column.append(column_)
 
     return array_of_column
-
