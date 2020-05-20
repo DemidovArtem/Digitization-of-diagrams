@@ -141,14 +141,15 @@ def recogn_column(diagram_image, num_clasters=10):
     return boarder
 
 
-def drow_boarder(diagram_image, boarder):
+def draw_boarder(diagram_image, boarder):
     color_red = (0, 0, 255)
 
     array_of_column = []
     for i in boarder:
-        if (i != [[]]):
+        if i != [[]]:
             cv2.drawContours(diagram_image, [i], 0, color_red, 2)
-            mid = min(i[0][0], min(i[2][0], min(i[3][0], i[1][0]))) - 10
+            print(i)
+            mid = (i[0][0] + i[1][0])/2
             column_ = column.Column(mid, min(i[0][1],  i[3][1]), '', 0)
             array_of_column.append(column_)
 

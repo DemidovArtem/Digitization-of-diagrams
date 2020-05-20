@@ -4,7 +4,7 @@ import time
 import xml.etree.ElementTree as ET
 import cv2
 import sys
-
+import numpy as np
 from AbbyyOnlineSdk import *
 
 processor = None
@@ -71,12 +71,27 @@ def recognize_file(file_path, result_file_path, language, output_format, region)
         print("Error processing task")
 
 
-def parse_xml(target):
+def parse_xml(target, array_of_column, is_under_ox=False):
     tree = ET.parse(target)
     root = tree.getroot()
+    if is_under_ox:
+        columns = [col.x_coordinate for col in sorted(array_of_column, key=lambda col: col.x_coordinate)]
+        text = [''] * len(columns)
+        new_line = [False] * len(columns)
+        for line in root.iter('{@link}line'):
+            for char in line.iter('{@link}char'):
+                x = (int(char.attrib['left']) + int(char.attrib['right']))/2
+                index = np.argmin(np.abs(np.array(columns) - x))
+                if new_line[index]:
+                    new_line[index] = False
+                    text[index] += ' '
+                text[index] += char.text
+            new_line = [True] * len(columns)
+    else:
+        text = [''.join([char.text for char in line.iter('{@link}char')]) for line in root.iter('{@link}line')]
     return [line.attrib for line in root.iter('{@link}line')], \
         len([char for char in root.iter('{@link}char')]),\
-        [''.join([char.text for char in line.iter('{@link}char')]) for line in root.iter('{@link}line')]
+        text
 
 
 def draw_rectangles(img, bounds):
@@ -89,7 +104,7 @@ def draw_rectangles(img, bounds):
                           2)
 
 
-def find_text(source_file, axes, language="English", output_format="xml", target_file = "result.xml"):
+def find_text(source_file, axes, array_of_column, language="English", output_format="xml", target_file="result.xml"):
     global processor
     processor = AbbyyOnlineSdk()
 
@@ -118,9 +133,10 @@ def find_text(source_file, axes, language="English", output_format="xml", target
         bounds = []
         counts = []
         text = []
-        for region in regions:
+        for i, region in enumerate(regions):
             recognize_file(source_file, target_file, language, output_format, region)
-            bound, count, line = parse_xml(target_file)
+            is_under_ox = (i == 2)
+            bound, count, line = parse_xml(target_file, array_of_column, is_under_ox)
             bounds.append(bound)
             counts.append(count)
             text.append(line)
