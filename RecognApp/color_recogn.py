@@ -148,7 +148,6 @@ def draw_boarder(diagram_image, boarder):
     for i in boarder:
         if i != [[]]:
             cv2.drawContours(diagram_image, [i], 0, color_red, 2)
-            print(i)
             mid = (i[0][0] + i[1][0]) / 2
             column_ = column.Column(mid, min(i[0][1], i[3][1]), '', 0)
             array_of_column.append(column_)
