@@ -121,11 +121,10 @@ def find_text(source_file, axes, language="English", output_format="xml", target
         for region in regions:
             recognize_file(source_file, target_file, language, output_format, region)
             bound, count, line = parse_xml(target_file)
-            target_file += '___.xml'
             bounds.append(bound)
             counts.append(count)
             text.append(line)
-        #os.remove(target_file)
+        os.remove(target_file)
         return bounds, counts, text
     else:
         print("No such file: {}".format(source_file))

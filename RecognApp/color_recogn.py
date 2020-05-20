@@ -1,4 +1,4 @@
-#libraries
+# libraries
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 import argparse
@@ -11,12 +11,14 @@ import random
 import sys
 import parse_text
 
+
 def centroid_histogram(clt):
     numLabels = np.arange(0, len(np.unique(clt.labels_)) + 1)
     (hist, _) = np.histogram(clt.labels_, bins = numLabels)
     hist = hist.astype("float")
     hist /= hist.sum()
     return hist
+
 
 def plot_colors(hist, centroids):
     bar = np.zeros((50, 300, 3), dtype = "uint8")
@@ -29,8 +31,8 @@ def plot_colors(hist, centroids):
     return bar
 
 
-#функция проверки того, что текцщий цвет является цветом прямоугольников
-#в конце мы получаем массив контуров(не цельный), кусочков нужных нам контуров прямоугольников
+# функция проверки того, что текцщий цвет является цветом прямоугольников
+# в конце мы получаем массив контуров(не цельный), кусочков нужных нам контуров прямоугольников
 def rectangle_check(cluster, img):
     boarder = [[[]]]
     max_y = 0
@@ -39,18 +41,20 @@ def rectangle_check(cluster, img):
         R = int(color[0])
         G = int(color[1])
         B = int(color[2])
-        if (R > 250 and G > 250 and B > 250):#фильтрация цвета фона
+        if R > 250 and G > 250 and B > 250:
+            # фильтрация цвета фона
             continue
         low = (R - 10, G - 10, B - 10)
         high = (R + 10, G + 10, B + 10)
         new_picture = cv2.inRange(img, low, high)
-        #нахождение всевозможных контуров
+        # нахождение всевозможных контуров
         contours, hierarchy = cv2.findContours(new_picture.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         for cnt in contours:
-            rect = cv2.minAreaRect(cnt)#вписываем минимальный прямоугольник
+            # вписываем минимальный прямоугольник
+            rect = cv2.minAreaRect(cnt)
             box = cv2.boxPoints(rect)
             box = np.int0(box)
-            #вычисляем площадь и угол наклона прямоугольника
+            # вычисляем площадь и угол наклона прямоугольника
             area = int(rect[1][0]*rect[1][1])
             edge1 = np.int0((box[1][0] - box[0][0],box[1][1] - box[0][1]))
             edge2 = np.int0((box[2][0] - box[1][0], box[2][1] - box[1][1]))
@@ -61,16 +65,18 @@ def rectangle_check(cluster, img):
             a = reference[0]*usedEdge[0] + reference[1]*usedEdge[1]
             b = cv2.norm(reference) * cv2.norm(usedEdge)
             angle = 180.0/math.pi * math.acos(a / b)
-            #отбрасываем прямоугольники стоящие под кглом к осям, а так же слишком маленькие которые являются точками,
-            #или же слишком большие(например сам прямоугольник картинки)
-            if area > 1000 and area < 100000 and (angle == 90.0 or angle == 180.0 or angle == 0.0):
+            # отбрасываем прямоугольники стоящие под кглом к осям, а так же слишком маленькие которые являются точками,
+            # или же слишком большие(например сам прямоугольник картинки)
+            if 1000 < area < 100000 and (angle == 90.0 or angle == 180.0 or angle == 0.0):
                 boarder.append(box)
-                if (max(box[0][1], max(box[1][1], max(box[2][1], box[3][1]))) > max_y):
+                if max(box[0][1], max(box[1][1], max(box[2][1], box[3][1]))) > max_y:
                     max_y =  max(box[0][1], max(box[1][1], max(box[2][1], box[3][1])))
     boarder.remove([[]])
     return boarder, max_y
 
-#функция разделения boarder на два подмассива, в 1 прямоугольники основание которых нижняя ось(column), в boarder остальные
+
+# функция разделения boarder на два подмассива,
+# в 1 прямоугольники основание которых нижняя ось(column), в boarder остальные
 def divided_rectangle(boarder, max_y):
     column = [[[]]]
     for i in range(len(boarder)):
@@ -81,17 +87,19 @@ def divided_rectangle(boarder, max_y):
     column.remove([[]])
     return boarder, column
 
-#склеивание прямоугольников
+
+# склеивание прямоугольников
 def merge_rectangle(boarder, column, max_y):
     for i in range(len(boarder)):
         cur_b = boarder[i]
-        if(cur_b != [[]]):
+        if cur_b != [[]]:
             for j in range(len(column)):
                 cur_c = column[j]
-                if (cur_c != [[]]):
-                    #здесь происходит следующее: надо из 2 прямоугольников сделать 1,
-                    #т.е. взять самый левый нижний край ,самый правый нижний край(аналогично с верхними краями) из двухз прямоугольников
-                    #т.к. кординаты не отсортированы по порядку, а сортировать долго лучше сделать так
+                if cur_c != [[]]:
+                    # здесь происходит следующее: надо из 2 прямоугольников сделать 1,
+                    # т.е. взять самый левый нижний край ,самый правый нижний край(аналогично с верхними краями)
+                    # из двухз прямоугольников
+                    # т.к. кординаты не отсортированы по порядку, а сортировать долго лучше сделать так
                     min_x_boarder = min(cur_b[0][0], min(cur_b[1][0], min(cur_b[2][0], cur_b[3][0])))
                     min_x_column = min(cur_c[0][0], min(cur_c[1][0], min(cur_c[2][0], cur_c[3][0])))
                     max_x_boarder = max(cur_b[0][0], max(cur_b[1][0], max(cur_b[2][0], cur_b[3][0])))
@@ -110,9 +118,8 @@ def merge_rectangle(boarder, column, max_y):
     return boarder
 
 
-
-def recogn_column(diagram_image, num_clasters = 10):
-    cv2.imshow('diagram_image', diagram_image)
+def recogn_column(diagram_image, num_clasters=10):
+    # cv2.imshow('diagram_image', diagram_image)
     diagram_image = cv2.cvtColor(diagram_image, cv2.COLOR_BGR2RGB)
     img = diagram_image
     img = img.reshape((img.shape[0] * img.shape[1], 3))
@@ -124,14 +131,15 @@ def recogn_column(diagram_image, num_clasters = 10):
     cluster = np.zeros((10, 3), dtype=int)
     l = 0
     for i in bar[-1]:
-        if (cluster[np.max(l - 1, 0)][0] != i[0]):
+        if cluster[np.max(l - 1, 0)][0] != i[0]:
             cluster[l] = i
             l += 1
     boarder, max_y = rectangle_check(cluster, diagram_image)
     boarder, column = divided_rectangle(boarder, max_y)
     boarder = merge_rectangle(boarder, column, max_y)
-    #возвращение границ исходных столбиков
+    # возвращение границ исходных столбиков
     return boarder
+
 
 def drow_boarder(diagram_image, boarder):
     color_red = (0, 0, 255)
