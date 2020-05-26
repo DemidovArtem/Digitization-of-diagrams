@@ -3,6 +3,7 @@ import find_axes
 import find_text
 import parse_text
 import column
+import xlsxwriter
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 import argparse
@@ -42,6 +43,15 @@ def x_val_for_column(array_of_column):
     a[count].x_val = cur
     return a
 
+def table_creation(data):
+    full_path = "./" + sys.argv[1].split(".")[0] + ".xlsx"
+    workbook = xlsxwriter.Workbook(full_path)
+
+    worksheet = workbook.add_worksheet()
+    for column in range(len(data)):
+        worksheet.write(column, 0, data[column].x_val)
+        worksheet.write(column, 1, data[column].y_val)
+    workbook.close()
 
 color_black = (0, 0, 0)
 #нахождение границ столбиков
@@ -74,6 +84,7 @@ array_of_column = color_recogn.drow_boarder(diagram_image, boarder)
 #заполнение значений столбиков
 final_answer_column = x_val_for_column(array_of_column)
 
+table_creation(final_answer_column)
 
 parse_text.set_coefficients(bounds[0], text[0])
 
