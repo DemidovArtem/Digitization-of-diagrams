@@ -53,6 +53,7 @@ lines = find_axes.find_axes(sys.argv[1])
 axes = {'left': int(lines[0][0][0]),
         'right': int(lines[1][0][0]),
         'bottom': int(lines[2][0][0])}
+
 #нахождение текста на диаграммах
 bounds, counts, text = find_text.find_text(sys.argv[1], axes, language='English')
 if counts[1] > counts[0]:
@@ -64,22 +65,30 @@ else:
     bounds.pop(1)
     text.pop(1)
 
-
-
 #отрисовка
 find_axes.draw_lines_on_image(diagram_image, lines)
 find_text.draw_rectangles(diagram_image, bounds)
 array_of_column = color_recogn.drow_boarder(diagram_image, boarder)
 
+#фикс смещения
+min = 0
+for i in range(len(bounds[0])):
+    print(bounds[0][i])
+    if (int(bounds[0][i]['bottom'])) > min:
+        min = int(bounds[0][i]['bottom'])
+
+print(lines[1][0][0])
+bias = abs(min - lines[1][0][0])
+
+
 #заполнение значений столбиков
 final_answer_column = x_val_for_column(array_of_column)
 
-table_creation(final_answer_column)
 
 parse_text.set_coefficients(bounds[0], text[0])
 
 for i in range(len(final_answer_column)):
-    final_answer_column[i].y_val = parse_text.get_value(final_answer_column[i].y_coordinate)
+    final_answer_column[i].y_val = parse_text.get_value(final_answer_column[i].y_coordinate, bias)
 
 #печать всех столбиков и их значение в консоль
 for i in range(len(final_answer_column)):
