@@ -16,16 +16,6 @@ import random
 import sys
 
 
-def table_creation(data):
-    full_path = "./recognized_table.xlsx"
-    workbook = xlsxwriter.Workbook(full_path)
-
-    worksheet = workbook.add_worksheet()
-    for column in range(len(data)):
-        worksheet.write(column, 0, data[column].x_value)
-        worksheet.write(column, 1, data[column].y_value)
-    workbook.close()
-
 def coordinate_key(person):
     return person.x_coordinate
 
