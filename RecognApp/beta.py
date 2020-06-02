@@ -80,10 +80,8 @@ for i in range(len(bounds[0])):
 print(lines[1][0][0])
 bias = abs(min - lines[1][0][0])
 
-
 #заполнение значений столбиков
 final_answer_column = x_val_for_column(array_of_column)
-
 
 parse_text.set_coefficients(bounds[0], text[0])
 

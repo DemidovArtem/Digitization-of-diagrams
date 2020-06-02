@@ -4,11 +4,8 @@ import time
 import xml.etree.ElementTree as ET
 import cv2
 import sys
-<<<<<<< HEAD:RecognApp/find_text.py
 
-=======
 import numpy as np
->>>>>>> 1c90f030a164d8f78191e055b4575072255e5775:RecongApp/find_text.py
 from AbbyyOnlineSdk import *
 
 processor = None
@@ -45,13 +42,6 @@ def recognize_file(file_path, result_file_path, language, output_format, region)
     if task.Status == "NotEnoughCredits":
         print("Not enough credits to process the document. Please add more pages to your application's account.")
         return
-
-<<<<<<< HEAD:RecognApp/find_text.py
-    # print("Id = {}".format(task.Id))
-    # print("Status = {}".format(task.Status))
-
-=======
->>>>>>> 1c90f030a164d8f78191e055b4575072255e5775:RecongApp/find_text.py
     # Wait for the task to be completed
     # Note: it's recommended that your application waits at least 2 seconds
     # before making the first getTaskStatus request and also between such requests
@@ -68,22 +58,10 @@ def recognize_file(file_path, result_file_path, language, output_format, region)
     if task.Status == "Completed":
         if task.DownloadUrl is not None:
             processor.download_result(task, result_file_path)
-<<<<<<< HEAD:RecognApp/find_text.py
-            # print("Result was written to {}".format(result_file_path))
-=======
->>>>>>> 1c90f030a164d8f78191e055b4575072255e5775:RecongApp/find_text.py
     else:
         print("Error processing task")
 
 
-<<<<<<< HEAD:RecognApp/find_text.py
-def parse_xml(target):
-    tree = ET.parse(target)
-    root = tree.getroot()
-    return [line.attrib for line in root.iter('{@link}line')], \
-        len([char for char in root.iter('{@link}char')]),\
-        [''.join([char.text for char in line.iter('{@link}char')]) for line in root.iter('{@link}line')]
-=======
 def parse_xml(target, array_of_column, is_under_ox=False):
     tree = ET.parse(target)
     root = tree.getroot()
@@ -107,8 +85,6 @@ def parse_xml(target, array_of_column, is_under_ox=False):
     return [line.attrib for line in root.iter('{@link}line')], \
         len([char for char in root.iter('{@link}char')]),\
         text
->>>>>>> 1c90f030a164d8f78191e055b4575072255e5775:RecongApp/find_text.py
-
 
 def draw_rectangles(img, bounds):
     for b in bounds:
@@ -120,18 +96,11 @@ def draw_rectangles(img, bounds):
                           2)
 
 
-<<<<<<< HEAD:RecognApp/find_text.py
-def find_text(source_file, axes, language="English", output_format="xml", target_file = "result.xml"):
-=======
 def find_text(source_file, axes, array_of_column, language="English", output_format="xml", target_file="result.xml"):
->>>>>>> 1c90f030a164d8f78191e055b4575072255e5775:RecongApp/find_text.py
     global processor
     processor = AbbyyOnlineSdk()
-
     setup_processor()
-
     img = cv2.imread(source_file)
-
     max_y, max_x = img.shape[:2]
     min_y, min_x = 0, 0
     # отсутп от границ, нужен для корректной работы с регионами
@@ -140,7 +109,6 @@ def find_text(source_file, axes, array_of_column, language="English", output_for
     min_y += shift
     max_x -= shift
     max_y -= shift
-
     left_region = [str(elem) for elem in [min_x, min_y, axes['left'], max_y]]
     right_region = [str(elem) for elem in [axes['right'], min_y, max_x, max_y]]
     bottom_region = [str(elem) for elem in [min_x, axes['bottom'], max_x, max_y]]
@@ -153,19 +121,6 @@ def find_text(source_file, axes, array_of_column, language="English", output_for
         bounds = []
         counts = []
         text = []
-<<<<<<< HEAD:RecognApp/find_text.py
-        for region in regions:
-            recognize_file(source_file, target_file, language, output_format, region)
-            bound, count, line = parse_xml(target_file)
-            target_file += '___.xml'
-            bounds.append(bound)
-            counts.append(count)
-            text.append(line)
-        #os.remove(target_file)
-        return bounds, counts, text
-    else:
-        print("No such file: {}".format(source_file))
-=======
         for i, region in enumerate(regions):
             recognize_file(source_file, target_file, language, output_format, region)
             is_under_ox = (i == 2)
@@ -177,4 +132,3 @@ def find_text(source_file, axes, array_of_column, language="English", output_for
         return bounds, counts, text
     else:
         print("No such file: {}".format(source_file))
->>>>>>> 1c90f030a164d8f78191e055b4575072255e5775:RecongApp/find_text.py
