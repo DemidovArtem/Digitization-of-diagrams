@@ -41,7 +41,6 @@ def recognize_file(file_path, result_file_path, language, output_format, region)
     if task.Status == "NotEnoughCredits":
         print("Not enough credits to process the document. Please add more pages to your application's account.")
         return
-
     # Wait for the task to be completed
     # Note: it's recommended that your application waits at least 2 seconds
     # before making the first getTaskStatus request and also between such requests
@@ -100,11 +99,8 @@ def draw_rectangles(img, bounds):
 def find_text(source_file, axes, array_of_column, language="English", output_format="xml", target_file="result.xml"):
     global processor
     processor = AbbyyOnlineSdk()
-
     setup_processor()
-
     img = cv2.imread(source_file)
-
     max_y, max_x = img.shape[:2]
     min_y, min_x = 0, 0
     # отсутп от границ, нужен для корректной работы с регионами
@@ -113,7 +109,6 @@ def find_text(source_file, axes, array_of_column, language="English", output_for
     min_y += shift
     max_x -= shift
     max_y -= shift
-
     left_region = [str(elem) for elem in [min_x, min_y, axes['left'], max_y]]
     right_region = [str(elem) for elem in [axes['right'], min_y, max_x, max_y]]
     bottom_region = [str(elem) for elem in [min_x, axes['bottom'], max_x, max_y]]

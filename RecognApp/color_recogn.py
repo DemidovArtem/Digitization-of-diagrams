@@ -29,10 +29,10 @@ def plot_colors(hist, centroids):
                       color.astype("uint8").tolist(), -1)
         startX = endX
     return bar
-
-
 # функция проверки того, что текцщий цвет является цветом прямоугольников
 # в конце мы получаем массив контуров(не цельный), кусочков нужных нам контуров прямоугольников
+
+
 def rectangle_check(cluster, img):
     boarder = [[[]]]
     max_y = 0
@@ -83,7 +83,7 @@ def divided_rectangle(boarder, max_y):
     column = [[[]]]
     for i in range(len(boarder)):
         cur = boarder[i]
-        if (abs(max(cur[0][1], max(cur[1][1], max(cur[2][1], cur[3][1]))) - max_y) > 2):
+        if abs(max(cur[0][1], max(cur[1][1], max(cur[2][1], cur[3][1]))) - max_y) > 2:
             column.append(cur)
             boarder[i] = [[]]
     column.remove([[]])
@@ -107,7 +107,7 @@ def merge_rectangle(boarder, column, max_y):
                     max_x_boarder = max(cur_b[0][0], max(cur_b[1][0], max(cur_b[2][0], cur_b[3][0])))
                     min_y_boarder = min(cur_b[0][1], min(cur_b[1][1], min(cur_b[2][1], cur_b[3][1])))
                     min_y_column = min(cur_c[0][1], min(cur_c[1][1], min(cur_c[2][1], cur_c[3][1])))
-                    if (abs(min_x_column - min_x_boarder) < 2):
+                    if abs(min_x_column - min_x_boarder) < 2:
                         boarder[i][0][0] = min_x_boarder
                         boarder[i][1][0] = max_x_boarder
                         boarder[i][2][0] = max_x_boarder
