@@ -36,6 +36,6 @@ def set_coefficients(bounds, part):
     b = v_1 - k * y_1
 
 
-def get_value(y, bias_):
-    bias = min(2.5, bias_ + 0.5)
+def get_value(y, bias):
+    bias = min(2.5, bias + 0.5)
     return str(int(round(k * y + b + bias))) + name
