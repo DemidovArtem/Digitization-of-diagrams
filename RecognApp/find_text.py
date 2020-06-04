@@ -4,7 +4,6 @@ import time
 import xml.etree.ElementTree as ET
 import cv2
 import sys
-
 import numpy as np
 from AbbyyOnlineSdk import *
 
@@ -85,6 +84,7 @@ def parse_xml(target, array_of_column, is_under_ox=False):
     return [line.attrib for line in root.iter('{@link}line')], \
         len([char for char in root.iter('{@link}char')]),\
         text
+
 
 def draw_rectangles(img, bounds):
     for b in bounds:

@@ -1,6 +1,7 @@
 k, b = 0, 0
 name = ''
 
+
 def set_coefficients(bounds, part):
     global name
     new_part = []
@@ -34,5 +35,7 @@ def set_coefficients(bounds, part):
         / (y_0 - y_1)
     b = v_1 - k * y_1
 
-def get_value(y):
-    return str(int(k * y + b)) + name
+
+def get_value(y, bias):
+    bias = min(2.5, bias + 0.5)
+    return str(int(round(k * y + b + bias))) + name
