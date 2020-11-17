@@ -2,10 +2,6 @@
 
 This repository contains our project "digitization of diagrams".
 
-## Getting Started
-
-Install all required dependancies 
-
 ### Prerequisites
 
 * python 3.7.7 https://www.python.org/downloads/
@@ -29,11 +25,3 @@ Install all required dependancies
 * **Demidov Artem** - *Developer* - 
 * **Kurenev Alexander** - *Developer* - 
 * **Sofya Sergienko** - *Product manager* - 
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.(мб потом появяться)
-
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
