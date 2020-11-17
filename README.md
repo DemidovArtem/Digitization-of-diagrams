@@ -1,4 +1,4 @@
-# Project Title
+# Digitization of diagrams
 
 This repository contains our project "digitization of diagrams".
 
